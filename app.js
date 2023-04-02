@@ -1,6 +1,7 @@
 const path = require('path');
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const db = require('./database')
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
@@ -25,11 +26,12 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
-// csrf
 const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+app.use(bodyParser.urlencoded({ extended: false }));
 // static path
 app.use(express.static(path.join(__dirname, 'public')));
 // session
@@ -45,11 +47,10 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-
-  console.log('req.session.user', req.session.user)
   if (!req.session.user) {
     return next();
   }
+
   User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
@@ -61,6 +62,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
+
   next();
 });
 
