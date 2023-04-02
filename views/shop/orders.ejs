@@ -3,7 +3,8 @@
     </head>
 
     <body>
-        <%- include('../includes/navigation.ejs') %>
+        <%- include('../includes/navigation.ejs',{user}) %>
+        
         <main>
             <% if (orders.length <= 0) { %>
                 <h1>Nothing there!</h1>
@@ -14,7 +15,10 @@
                             <h1>Order - # <%= order._id %></h1>
                             <ul class="orders__products">
                                 <% order.products.forEach(p => { %>
-                                    <li class="orders__products-item"><%= p.product.title %> (<%= p.quantity %>)</li>
+                                    <li class="orders__products-item">
+                                        <p class="subItem"><%= p.product.title %> (<%= p.quantity %>) </p>
+                                        <p class="subItem">from Seller: <%= p.product.userId.email %> </p>
+                                    </li>
                                 <% }); %>
                             </ul>
                         </li>

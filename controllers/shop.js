@@ -2,12 +2,21 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
+  let newProducts = ''
+
   Product.find()
+    .populate('userId')
     .then(products => {
+      // console.log('products', products)
+      if (req.session.isLoggedIn) {
+        newProducts = products.filter((item) => item.userId._id.toString() !== req.user._id.toString())
+      }
+      console.log('newProducts', newProducts)
       res.render('shop/product-list', {
-        prods: products,
+        prods: !req.user ? products : newProducts,
         pageTitle: 'All Products',
-        path: '/products'
+        path: '/products',
+        user: req.user || ''
       });
     })
     .catch(err => {
@@ -22,19 +31,29 @@ exports.getProduct = (req, res, next) => {
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.title,
-        path: '/products'
+        path: '/products',
+        user: req.user || ''
       });
     })
     .catch(err => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
+  let newProducts = ''
+
   Product.find()
+    .populate('userId')
     .then(products => {
+
+      if (req.session.isLoggedIn) {
+        newProducts = products.filter((item) => item.userId._id.toString() !== req.user._id.toString())
+      }
+
       res.render('shop/index', {
-        prods: products,
+        prods: !req.user ? products : newProducts,
         pageTitle: 'Shop',
-        path: '/'
+        path: '/',
+        user: req.user || ''
       });
     })
     .catch(err => {
@@ -50,7 +69,8 @@ exports.getCart = (req, res, next) => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products: products
+        products: products,
+        user: req.user || ''
       });
     })
     .catch(err => console.log(err));
@@ -105,11 +125,14 @@ exports.postOrder = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   Order.find({ 'user.userId': req.user._id })
+    .populate('products.product.userId')
     .then(orders => {
+      // console.log('orders', orders[0].products[0].product.userId)
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
-        orders: orders
+        orders: orders,
+        user: req.user || ''
       });
     })
     .catch(err => console.log(err));

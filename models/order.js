@@ -5,7 +5,32 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema({
   products: [
     {
-      product: { type: Object, required: true },
+      product: {
+        //  type: Object,
+        // type: Schema.Types.ObjectId,
+        // ref: 'Product',
+        title: {
+          type: String,
+          required: true
+        },
+        price: {
+          type: Number,
+          required: true
+        },
+        description: {
+          type: String,
+          required: true
+        },
+        imageUrl: {
+          type: String,
+          required: true
+        },
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+          required: true
+        },
+      },
       quantity: { type: Number, required: true }
     }
   ],
@@ -19,7 +44,7 @@ const orderSchema = new Schema({
       required: true,
       ref: 'User'
     }
-  }
+  },
 }, {
   timestamps: true,
 });
