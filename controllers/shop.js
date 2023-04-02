@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+
+const PDFDocument = require('pdfkit');
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -136,4 +140,86 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch(err => console.log(err));
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  Order.findById(orderId)
+    .populate('products.product.userId')
+    .then(order => {
+      if (!order) {
+        return next(new Error('No order found.'));
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(new Error('Unauthorized'));
+      }
+      const invoiceName = 'invoice-' + orderId + '.pdf';
+      const invoicePath = path.join('data', 'invoices', invoiceName);
+      const logoPath = path.join('public', 'images', 'logo', 'logo-1.png')
+
+      const pdfDoc = new PDFDocument();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'inline; filename="' + invoiceName + '"'
+      );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc.image(logoPath, 270, 20, {
+        fit: [50, 50],
+        // width: 480,
+        align: 'center',
+        valign: 'center',
+      });
+
+      pdfDoc.fontSize(26).text(`Invoice`, {
+        underline: true
+      });
+
+      pdfDoc.fontSize(14).text(`Order No: ${order._id}`, {
+        width: 480,
+        align: 'right'
+      });
+
+      pdfDoc.fontSize(14).text(`Order Date: ${new Date(order.createdAt).toUTCString()}`, {
+        width: 480,
+        align: 'right'
+      });
+
+      pdfDoc.text(' ', 72).underline(72, 115, 480, 27, { color: '#000' })
+      let totalPrice = 0;
+      order.products.forEach(prod => {
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDoc
+          .fontSize(14)
+          .text(
+            prod.product.title +
+            ' - ' +
+            prod.quantity +
+            ' x ' +
+            '$' +
+            prod.product.price, {
+            width: 480,
+            height: 60,
+            align: 'left',
+            continued: true,
+          }).text(
+            `seller : ${prod.product.userId.email}`, {
+            width: 480,
+            height: 60,
+            color: '#000',
+            align: 'right',
+          }).moveDown(0.5);
+      });
+
+      pdfDoc
+        .moveDown(25).fontSize(20).text('Total Price: $' + totalPrice, {
+          width: 480,
+          align: 'right'
+        })
+
+      pdfDoc.end();
+    })
+    .catch(err => next(err));
 };

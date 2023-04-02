@@ -262,3 +262,15 @@ form {
     width: 30rem;
   }
 }
+
+#copyrightWrap {
+  width: 100%;
+  position: fixed;
+  bottom: 3%;
+}
+
+#copyright {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
