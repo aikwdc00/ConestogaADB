@@ -20,6 +20,8 @@ const orderSchema = new Schema({
       ref: 'User'
     }
   }
+}, {
+  timestamps: true,
 });
 
 module.exports = mongoose.model('Order', orderSchema);

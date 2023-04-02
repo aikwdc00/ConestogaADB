@@ -1,38 +1,41 @@
 const path = require('path');
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const db = require('./database')
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+require('dotenv').config()
 
-const errorController = require('./controllers/error');
 const User = require('./models/user');
-
-const MONGODB_URI =
-  'mongodb+srv://learnMongoDB:learnMongoDB@cluster0.wm4gpaa.mongodb.net/mongooseShop?retryWrites=true&w=majority';
-
-const app = express();
-const store = new MongoDBStore({
-  uri: MONGODB_URI,
-  collection: 'sessions'
-});
-const csrfProtection = csrf();
-
-app.set('view engine', 'ejs');
-app.set('views', 'views');
-
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+const errorController = require('./controllers/error');
+
+// port
+const port = 3000;
+const app = express();
+
+// session store
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: 'sessions'
+});
+
+// csrf
+const csrfProtection = csrf();
+
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+// static path
 app.use(express.static(path.join(__dirname, 'public')));
+// session
 app.use(
   session({
-    secret: 'my secret',
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     store: store
@@ -61,17 +64,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// router
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-
 app.use(errorController.get404);
 
-mongoose
-  .connect(MONGODB_URI)
+
+// run database
+db
   .then(result => {
-    app.listen(3000);
+    console.log('connected mongoose')
+    app.listen(port, (err) => {
+      if (err) {
+        console.log('connect err', err)
+        return
+      }
+      console.log(`Example app listening on port ${port}`)
+    })
   })
-  .catch(err => {
-    console.log(err);
-  });
+  .catch(err => console.log('err', err));
