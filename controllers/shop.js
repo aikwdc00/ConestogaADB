@@ -131,7 +131,6 @@ exports.getOrders = (req, res, next) => {
   Order.find({ 'user.userId': req.user._id })
     .populate('products.product.userId')
     .then(orders => {
-      // console.log('orders', orders[0].products[0].product.userId)
 
       orders.sort((a, b) => {
         if (a.createdAt < b.createdAt) return 1
@@ -175,7 +174,6 @@ exports.getInvoice = (req, res, next) => {
 
       pdfDoc.image(logoPath, 270, 20, {
         fit: [50, 50],
-        // width: 480,
         align: 'center',
         valign: 'center',
       });

@@ -4,7 +4,9 @@
   <nav class="main-header__nav">
     <ul class="main-header__item-list">
       <li class="main-header__item">
-        <a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a>
+        <a class="<%= path === '/' ? 'active' : '' %>" href="/">
+          <img id="navLogo" src="/images/logo/logo-1.png" alt="logo" />
+        </a>
       </li>
       <li class="main-header__item">
         <a class="<%= path === '/products' ? 'active' : '' %>" href="/products"
@@ -36,6 +38,15 @@
       </li>
       <% } %>
     </ul>
+    <div class="changeFontSizeBox">
+      <label for="getNewFontSize">Font Size</label>
+      <input
+        id="getNewFontSize"
+        type="text"
+        value="16"
+        placeholder="change Font Size"
+      />
+    </div>
     <ul class="main-header__item-list">
       <% if (!isAuthenticated) { %>
       <li class="main-header__item">
@@ -95,6 +106,7 @@
         >Admin Products
       </a>
     </li>
+
     <% } %> <% if (!isAuthenticated) { %>
     <li class="mobile-nav__item">
       <a class="<%= path === '/login' ? 'active' : '' %>" href="/login"
@@ -114,5 +126,17 @@
       </form>
     </li>
     <% } %>
+
+    <li class="mobile-nav__item">
+      <div class="changeFontSizeBox">
+        <label for="getNewFontSize">Font Size</label>
+        <input
+          id="getNewFontSize"
+          type="text"
+          value="16"
+          placeholder="change Font Size"
+        />
+      </div>
+    </li>
   </ul>
 </nav>

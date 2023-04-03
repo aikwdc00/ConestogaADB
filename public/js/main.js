@@ -1,6 +1,8 @@
 const backdrop = document.querySelector('.backdrop');
 const sideDrawer = document.querySelector('.mobile-nav');
 const menuToggle = document.querySelector('#side-menu-toggle');
+const getNewFontSize = document.querySelector('#getNewFontSize')
+const setHtmlFont = document.querySelector('html')
 
 function backdropClickHandler() {
   backdrop.style.display = 'none';
@@ -12,5 +14,10 @@ function menuToggleClickHandler() {
   sideDrawer.classList.add('open');
 }
 
+function changeFontSizeHandler() {
+  setHtmlFont.style.fontSize = getNewFontSize.value + 'px'
+}
+
 backdrop.addEventListener('click', backdropClickHandler);
 menuToggle.addEventListener('click', menuToggleClickHandler);
+getNewFontSize.addEventListener('change', changeFontSizeHandler)
