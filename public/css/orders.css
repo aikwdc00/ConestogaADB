@@ -33,3 +33,8 @@
 .orders__products-item .subItem {
   display: inline-block;
 }
+
+.orderTitleWrap {
+  display: flex;
+  justify-content: space-between;
+}

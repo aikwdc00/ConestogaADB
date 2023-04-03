@@ -132,6 +132,13 @@ exports.getOrders = (req, res, next) => {
     .populate('products.product.userId')
     .then(orders => {
       // console.log('orders', orders[0].products[0].product.userId)
+
+      orders.sort((a, b) => {
+        if (a.createdAt < b.createdAt) return 1
+        if (a.createdAt > b.createdAt) return -1
+        return 0
+      })
+
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',

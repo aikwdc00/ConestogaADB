@@ -12,7 +12,10 @@
                 <ul class="orders">
                     <% orders.forEach(order => { %>
                         <li class="orders__item">
-                            <h1>Order - # <%= order._id %> - <a href="/orders/<%= order._id %>" target="_blank">Invoice</a></h1>
+<div class="orderTitleWrap">
+                                <h1>Order - # <%= order._id %> - <a href="/orders/<%= order._id %>" target="_blank">Invoice</a></h1>
+                            <h1><%= order.createdAt.toUTCString() %></h1>
+</div>
                             <ul class="orders__products">
                                 <% order.products.forEach(p => { %>
                                     <li class="orders__products-item">
