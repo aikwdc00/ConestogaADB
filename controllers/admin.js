@@ -1,3 +1,5 @@
+// FU-TING, LI, Student No: 8819152
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {

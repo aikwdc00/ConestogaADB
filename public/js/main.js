@@ -1,3 +1,5 @@
+// FU-TING, LI, Student No: 8819152
+
 const backdrop = document.querySelector('.backdrop');
 const sideDrawer = document.querySelector('.mobile-nav');
 const menuToggle = document.querySelector('#side-menu-toggle');

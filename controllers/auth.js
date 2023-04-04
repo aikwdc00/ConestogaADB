@@ -1,3 +1,5 @@
+// FU-TING, LI, Student No: 8819152
+
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
