@@ -13,11 +13,11 @@ exports.getProducts = (req, res, next) => {
   Product.find()
     .populate('userId')
     .then(products => {
-      // console.log('products', products)
+      console.log('products', products)
       if (req.session.isLoggedIn) {
         newProducts = products.filter((item) => item.userId._id.toString() !== req.user._id.toString())
       }
-      console.log('newProducts', newProducts)
+      // console.log('newProducts', newProducts)
       res.render('shop/product-list', {
         prods: !req.user ? products : newProducts,
         pageTitle: 'All Products',
